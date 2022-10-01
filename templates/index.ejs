@@ -37,6 +37,10 @@
                 <label for="price" class="form-label">Price</label>
                 <input type="text" class="form-control" name="price" placeholder="enter price" />
             </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" name="image"/>
+            </div>
             <button type="submit" class="btn btn-primary">ADD PRODUCT</button>
         </form>
         <table class="table table-dark table-striped align-middle">
@@ -47,6 +51,7 @@
                     <th scope="col">Product name</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Image</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -69,10 +74,15 @@
                             <%= data[i].price%>
                         </td>
                         <td>
+                            <img src="<%= data[i].image %>" height="50px" />
+
+                           
+                        </td>
+                        <td>
                             <form id="delete" method="post">
                                 <button class="btn btn-danger" type="submit" onclick="handleDelete({
                                     productId : '<%= data[i].productId %>'
-                                })" >DELETE</button>
+                                })">DELETE</button>
                             </form>
                         </td>
                     </tr>
@@ -83,7 +93,7 @@
 </body>
 <script>
     var deleteForm = document.getElementById('delete');
-    const handleDelete = ({productId}) => {
+    const handleDelete = ({ productId }) => {
         deleteForm.setAttribute('action', `/delete/${productId}`)
     }
 
