@@ -18,7 +18,7 @@ AWS.config = config;
 
 const client = new AWS.DynamoDB.DocumentClient();
 const tableName = 'product';
-const CLOUD_FRONT_URL = "https://di9j1hgvzf66g.cloudfront.net";
+const CLOUD_FRONT_URL = "https://d263o77st673zq.cloudfront.net";
 const s3 = new AWS.S3();
 
 
@@ -92,9 +92,19 @@ app.post("/delete/:id", (req, res) => {
     const params = {
         TableName: tableName,
         Key: {
-            productId: parseInt(req.params.id)
+            productId: req.params.id
         }
     }
+    // s3.deleteObject({
+    //     Bucket: process.env.AWS_BUCKET_NAME,
+    //     Key: req.params.image
+    // }, (err, data) => {
+    //     if (err) {
+    //         console.log(err);
+    //         return res.send('Internal server error');
+    //         console.log(req.body.image)
+    //     }
+    // })
     client.delete(params, (err, data) => {
         if (err) {
             console.log(err);
@@ -105,14 +115,15 @@ app.post("/delete/:id", (req, res) => {
     })
 })
 
-app.post("/", upload.single('image'), (req, res) => {
+
+app.post("/upload", upload.single('image'), (req, res) => {
     const { productId, name, quantity, price } = req.body;
     const image = req.file.originalname.split(".");
     const fileType = image[image.length - 1];
 
     const filePath = `${uuid() + Date.now().toString()}.${fileType}`;
     const params = {
-        Bucket: 'bucket-viet',
+        Bucket: 'ontap-ktgk-bucket',
         Key: filePath,
         Body: req.file.buffer
     }
@@ -125,7 +136,7 @@ app.post("/", upload.single('image'), (req, res) => {
             const newItem = {
                 TableName: tableName,
                 Item: {
-                    productId: parseInt(productId),
+                    productId: productId,
                     name: name,
                     quantity: quantity,
                     price: price,

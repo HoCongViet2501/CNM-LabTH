@@ -18,30 +18,34 @@
 </head>
 
 <body>
-    <div class="w-75 d-flex flex-column py-3 vh-100 mx-auto">
-        <form class="rounded-3 d-flex flex-column justify-content-evenly w-100 p-3 bg-light" action="/" method="post"
-            enctype="multipart/form-data">
-            <div class="mb-3 ">
-                <label for="productId" class="form-label">ID</label>
-                <input type="text" class="form-control" name="productId" placeholder="enter product id," />
+    <div class="w-75 d-flex mb-3 mt-3 flex-column py-3 vh-100 mx-auto">
+        <form action="/upload" name="formProduct" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="productId" class="form-label">ID product</label>
+                <input type="text" id="productId" class="form-control" name="productId" placeholder="enter product id"
+                    pattern="^[a-zA-Z1-9]*$" title="must be string and number" required />
             </div>
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" name="name" placeholder="enter name" />
+                <label for="name" class="form-label">Name Product</label>
+                <input type="text" class="form-control" name="name" placeholder="enter name" pattern="^[a-zA-Z\s]*$"
+                    title="must be string" required />
             </div>
             <div class="mb-3">
                 <label for="quantity" class="form-label">Quantity</label>
-                <input type="text" class="form-control" name="quantity" placeholder="enter quantity" />
+                <input type="text" class="form-control" name="quantity" placeholder="enter quantity" pattern="^[1-9]+$"
+                    title="must be number" required />
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price</label>
-                <input type="text" class="form-control" name="price" placeholder="enter price" />
+                <input type="text" class="form-control" name="price" placeholder="enter price" pattern="^[1-9]+$"
+                    title="must be number" required />
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
-                <input type="file" class="form-control" name="image"/>
+                <input type="file" class="form-control" name="image" placeholder="enter image" required />
             </div>
-            <button type="submit" class="btn btn-primary">ADD PRODUCT</button>
+            <button type="submit" class="btn btn-primary mb-3 w-100">ADD</button>
+            <button type="button" class="btn btn-secondary mb-3 w-100" onclick="clearForm()">RESET</button>
         </form>
         <table class="table table-dark table-striped align-middle">
             <thead>
@@ -74,17 +78,27 @@
                             <%= data[i].price%>
                         </td>
                         <td>
-                            <img src="<%= data[i].image %>" height="50px" />
-
-                           
+                            <img src="<%= data[i].image %>" />
                         </td>
-                        <td>
-                            <form id="delete" method="post">
-                                <button class="btn btn-danger" type="submit" onclick="handleDelete({
+                        <td class="d-flex" style="height: 100px;">
+                            <div class="mt-4">
+                                <button class="btn btn-info" type="submit" onclick="clickUpdate(
+                                    '<%= data[i].productId %>',
+                                    '<%= data[i].name %>',
+                                    '<%= data[i].quantity%>',
+                                    '<%= data[i].price %>',
+                                    '<%= data[i].image %>'
+                                )">
+                                    UPDATE
+                                </button>
+                            </div>
+                            <form id="delete" method="post" class="mt-4">
+                                <button class="btn btn-danger" onclick="handleDelete({
                                     productId : '<%= data[i].productId %>'
                                 })">DELETE</button>
                             </form>
                         </td>
+
                     </tr>
                     <% } %>
             </tbody>
@@ -94,7 +108,25 @@
 <script>
     var deleteForm = document.getElementById('delete');
     const handleDelete = ({ productId }) => {
-        deleteForm.setAttribute('action', `/delete/${productId}`)
+        deleteForm.setAttribute('action', `/delete/${productId}`);
+    }
+    function clickUpdate(productId, name, quantity, price, image) {
+        document.forms['formProduct']['productId'].value = productId;
+        document.forms['formProduct']['name'].value = name;
+        document.forms['formProduct']['quantity'].value = quantity;
+        document.forms['formProduct']['price'].value = price;
+        document.forms['formProduct']['image'].value = image;
+        var disable = document.getElementById('productId');
+        disable.setAttribute('readonly', 'readonly');
+    }
+    function clearForm() {
+        document.forms['formProduct']['productId'].value = '';
+        document.forms['formProduct']['name'].value = '';
+        document.forms['formProduct']['quantity'].value = '';
+        document.forms['formProduct']['price'].value = '';
+        document.forms['formProduct']['image'].value = '';
+        var disable = document.getElementById('productId');
+        disable.removeAttribute('readonly');
     }
 
 </script>
